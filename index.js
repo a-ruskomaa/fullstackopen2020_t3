@@ -16,12 +16,13 @@ app.use(morgan(':method :url :status :res[content-length] - :response-time ms :b
 
 const PORT = process.env.PORT
 
-
-
-app.get('/api/info', (req, res) => {
-      res.write(`<p>Phonebook has info for ${data.length} people</p>`);
-      res.write(`<p>${new Date()}</p>`);
-      res.end();
+app.get('/api/info', (req, res, next) => {
+  Entry.find({}).then(result => {
+    res.write(`<p>Phonebook has info for ${result.length} people</p>`);
+    res.write(`<p>${new Date()}</p>`);
+    res.end();
+  })
+  .catch(error => next(error))
 })
 
 app.get('/api/persons', (req, res) => {
@@ -30,22 +31,21 @@ app.get('/api/persons', (req, res) => {
   })
 })
 
-
-app.get('/api/persons/:id', (req, res) => {
-    const id = Number(req.params.id);
-    const entry = data.find(entry => entry.id === id);
-
+app.get('/api/persons/:id', (req, res, next) => {
+  Entry.findById(req.params.id)
+  .then(entry => {
     if (entry) {
-        res.json(entry);
+      res.json(entry)
     } else {
-        res.status(404).json({
-          error: 'not found'
-        })
+      res.status(404).json({
+        error: 'not found'
+      })
     }
-
+  })
+  .catch(error => next(error))
 })
 
-app.post('/api/persons', (req, res) => {
+app.post('/api/persons', (req, res, next) => {
   const body = req.body;
 
   if (!body.name) {
@@ -53,12 +53,6 @@ app.post('/api/persons', (req, res) => {
       error: 'name missing'
     })
   }
-
-  // if (data.find(entry => entry.name === body.name)) {
-  //   return res.status(400).json({
-  //     error: 'name must be unique'
-  //   })
-  // }
 
   if (!body.number) {
     return res.status(400).json({
@@ -72,17 +66,52 @@ app.post('/api/persons', (req, res) => {
   })
 
   entry.save().then(response => {
-    // console.log(response)
     res.json(response);
   })
+  .catch(error => next(error))
+})
+
+app.put('/api/persons/:id', (req, res, next) => {
+  const body = req.body;
+
+  const entry = {
+    name: body.name,
+    number: body.number
+  }
+
+  Entry.findByIdAndUpdate(req.params.id, entry, {new: true})
+  .then(updatedEntry => {
+    res.json(updatedEntry)
+  })
+  .catch(error => next(error))
 })
 
 app.delete('/api/persons/:id', (req, res) => {
-  const id = Number(req.params.id);
-  data = data.filter(entry => entry.id !== id);
-
-  res.status(204).end();
+  Entry.findByIdAndRemove(req.params.id)
+  .then(result => {
+    res.status(204).end()
+  })
+  .catch(error => next(error))
 })
+
+
+const unknownEndpoint = (request, response) => {
+  response.status(404).send({ error: 'unknown endpoint' })
+}
+
+app.use(unknownEndpoint)
+
+const errorHandler = (error, request, response, next) => {
+  console.error(error.message)
+
+  if (error.name === 'CastError') {
+    return response.status(400).send({ error: 'malformatted id' })
+  }
+
+  next(error)
+}
+
+app.use(errorHandler)
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
