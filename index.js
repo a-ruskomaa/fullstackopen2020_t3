@@ -1,6 +1,10 @@
 const express = require('express')
+const cors = require('cors')
 const morgan = require('morgan')
 const app = express()
+
+app.use(cors())
+app.use(express.static('build'))
 
 morgan.token('body', function (req, res) { return req.method === 'POST' ? JSON.stringify(req.body) : ' ' })
 
@@ -82,8 +86,6 @@ let data = [
       "id": Math.floor(Math.random() * 100000)
     }
 
-    console.log(entry);
-
     data = data.concat(entry);
   
     res.json(entry);
@@ -96,7 +98,7 @@ let data = [
     res.status(204).end();
   })
 
-  const PORT = 3001;
+  const PORT = process.env.PORT || 3001;
   app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
   })
