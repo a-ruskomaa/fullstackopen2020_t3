@@ -50,8 +50,32 @@ let data = [
   })
 
   app.post('/api/persons', (req, res) => {
-    const entry = req.body;
-    entry.id = Math.floor(Math.random() * 100000);
+    const body = req.body;
+
+    if (!body.name) {
+      return res.status(400).json({
+        error: 'name missing'
+      })
+    }
+
+    if (data.find(entry => entry.name === body.name)) {
+      return res.status(400).json({
+        error: 'name must be unique'
+      })
+    }
+
+    if (!body.number) {
+      return res.status(400).json({
+        error: 'number missing'
+      })
+    }
+
+    const entry = {
+      "name": body.name,
+      "number": body.number,
+      "id": Math.floor(Math.random() * 100000)
+    }
+
     console.log(entry);
 
     data = data.concat(entry);
