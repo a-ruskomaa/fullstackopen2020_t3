@@ -21,24 +21,34 @@ let data = [
       "name": "Mary Poppendieck",
       "number": "39-23-6423122",
       "id": 4
-    },
-    {
-      "name": "Aleksi",
-      "number": "345345",
-      "id": 6
     }
   ];
-
-  app.get('/api/persons', (req, res) => {
-      res.json(data);
-  })
-
 
   app.get('/api/info', (req, res) => {
         res.write(`<p>Phonebook has info for ${data.length} people</p>`);
         res.write(`<p>${new Date()}</p>`);
         res.end();
   })
+  
+  app.get('/api/persons', (req, res) => {
+      res.json(data);
+  })
+
+
+  app.get('/api/persons/:id', (req, res) => {
+      const id = Number(req.params.id);
+      const person = data.find(p => p.id === id);
+
+      if (person) {
+          res.json(person);
+      } else {
+          res.status(404);
+          res.end();
+      }
+
+  })
+
+
 
   const PORT = 3001;
   app.listen(PORT, () => {
