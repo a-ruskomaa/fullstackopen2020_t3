@@ -1,7 +1,11 @@
 const express = require('express')
+const morgan = require('morgan')
 const app = express()
 
+morgan.token('body', function (req, res) { return req.method === 'POST' ? JSON.stringify(req.body) : ' ' })
+
 app.use(express.json())
+app.use(morgan(':method :url :status :res[content-length] - :response-time ms :body'))
 
 let data = [
     {
@@ -44,7 +48,9 @@ let data = [
       if (entry) {
           res.json(entry);
       } else {
-          res.status(404).end();
+          res.status(404).json({
+            error: 'not found'
+          })
       }
 
   })
