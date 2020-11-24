@@ -1,6 +1,8 @@
 const express = require('express')
 const app = express()
 
+app.use(express.json())
+
 let data = [
     {
       "name": "Arto Hellas",
@@ -37,19 +39,29 @@ let data = [
 
   app.get('/api/persons/:id', (req, res) => {
       const id = Number(req.params.id);
-      const person = data.find(p => p.id === id);
+      const entry = data.find(entry => entry.id === id);
 
-      if (person) {
-          res.json(person);
+      if (entry) {
+          res.json(entry);
       } else {
           res.status(404).end();
       }
 
   })
 
+  app.post('/api/persons', (req, res) => {
+    const entry = req.body;
+    entry.id = Math.floor(Math.random() * 100000);
+    console.log(entry);
+
+    data = data.concat(entry);
+  
+    res.json(entry);
+  })
+
   app.delete('/api/persons/:id', (req, res) => {
     const id = Number(req.params.id);
-    data = data.filter(p => p.id !== id);
+    data = data.filter(entry => entry.id !== id);
   
     res.status(204).end();
   })
