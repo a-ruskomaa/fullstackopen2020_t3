@@ -1,0 +1,23 @@
+{
+  "name": "fullstackopen2020_t3",
+  "version": "0.0.1",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/a-ruskomaa/fullstackopen2020_t3.git"
+  },
+  "author": "Aleksi Ruskomaa",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/a-ruskomaa/fullstackopen2020_t3/issues"
+  },
+  "homepage": "https://github.com/a-ruskomaa/fullstackopen2020_t3#readme",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}
