@@ -33,6 +33,13 @@ let data = [
       res.json(data);
   })
 
+
+  app.get('/api/info', (req, res) => {
+        res.write(`<p>Phonebook has info for ${data.length} people</p>`);
+        res.write(`<p>${new Date()}</p>`);
+        res.end();
+  })
+
   const PORT = 3001;
   app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`)
