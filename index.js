@@ -54,11 +54,11 @@ app.post('/api/persons', (req, res) => {
     })
   }
 
-  if (data.find(entry => entry.name === body.name)) {
-    return res.status(400).json({
-      error: 'name must be unique'
-    })
-  }
+  // if (data.find(entry => entry.name === body.name)) {
+  //   return res.status(400).json({
+  //     error: 'name must be unique'
+  //   })
+  // }
 
   if (!body.number) {
     return res.status(400).json({
@@ -66,15 +66,15 @@ app.post('/api/persons', (req, res) => {
     })
   }
 
-  const entry = {
-    "name": body.name,
-    "number": body.number,
-    "id": Math.floor(Math.random() * 100000)
-  }
+  const entry = new Entry({
+    name: body.name,
+    number: body.number
+  })
 
-  data = data.concat(entry);
-
-  res.json(entry);
+  entry.save().then(response => {
+    // console.log(response)
+    res.json(response);
+  })
 })
 
 app.delete('/api/persons/:id', (req, res) => {
