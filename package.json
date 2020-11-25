@@ -10,7 +10,8 @@
     "build:ui": "rm -rf build && cd ../fullstackopen2020/part2/puhelinluettelo/ && npm run build --prod && cp -r build ../../../fullstackopen2020_t3/",
     "deploy": "git push heroku main",
     "deploy:full": "npm run build:ui && git add . && git commit -m uibuild && git push && npm run deploy",
-    "logs:prod": "heroku logs --tail"
+    "logs:prod": "heroku logs --tail",
+    "lint": "eslint ."
   },
   "repository": {
     "type": "git",

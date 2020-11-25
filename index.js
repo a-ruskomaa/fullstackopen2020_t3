@@ -18,35 +18,35 @@ const PORT = process.env.PORT
 
 app.get('/api/info', (req, res, next) => {
   Entry.find({}).then(result => {
-    res.write(`<p>Phonebook has info for ${result.length} people</p>`);
-    res.write(`<p>${new Date()}</p>`);
-    res.end();
+    res.write(`<p>Phonebook has info for ${result.length} people</p>`)
+    res.write(`<p>${new Date()}</p>`)
+    res.end()
   })
-  .catch(error => next(error))
+    .catch(error => next(error))
 })
 
 app.get('/api/persons', (req, res) => {
   Entry.find({}).then(result => {
-    res.json(result);
+    res.json(result)
   })
 })
 
 app.get('/api/persons/:id', (req, res, next) => {
   Entry.findById(req.params.id)
-  .then(entry => {
-    if (entry) {
-      res.json(entry)
-    } else {
-      res.status(404).json({
-        error: 'not found'
-      })
-    }
-  })
-  .catch(error => next(error))
+    .then(entry => {
+      if (entry) {
+        res.json(entry)
+      } else {
+        res.status(404).json({
+          error: 'not found'
+        })
+      }
+    })
+    .catch(error => next(error))
 })
 
 app.post('/api/persons', (req, res, next) => {
-  const body = req.body;
+  const body = req.body
 
   if (!body.name) {
     return res.status(400).json({
@@ -66,32 +66,32 @@ app.post('/api/persons', (req, res, next) => {
   })
 
   entry.save().then(response => {
-    res.json(response);
+    res.json(response)
   })
-  .catch(error => next(error))
+    .catch(error => next(error))
 })
 
 app.put('/api/persons/:id', (req, res, next) => {
-  const body = req.body;
+  const body = req.body
 
   const entry = {
     name: body.name,
     number: body.number
   }
 
-  Entry.findByIdAndUpdate(req.params.id, entry, {new: true})
-  .then(updatedEntry => {
-    res.json(updatedEntry)
-  })
-  .catch(error => next(error))
+  Entry.findByIdAndUpdate(req.params.id, entry, { new: true })
+    .then(updatedEntry => {
+      res.json(updatedEntry)
+    })
+    .catch(error => next(error))
 })
 
-app.delete('/api/persons/:id', (req, res) => {
+app.delete('/api/persons/:id', (req, res, next) => {
   Entry.findByIdAndRemove(req.params.id)
-  .then(result => {
-    res.status(204).end()
-  })
-  .catch(error => next(error))
+    .then(() => {
+      res.status(204).end()
+    })
+    .catch(error => next(error))
 })
 
 
@@ -107,7 +107,7 @@ const errorHandler = (error, request, response, next) => {
   if (error.name === 'CastError') {
     return response.status(400).send({ error: 'malformed id' })
   } else if (error.name === 'ValidationError') {
-    const errors = Object.values(error.errors).map(entry => entry.properties.message);
+    const errors = Object.values(error.errors).map(entry => entry.properties.message)
     return response.status(400).json({ errors })
   }
 
@@ -117,5 +117,5 @@ const errorHandler = (error, request, response, next) => {
 app.use(errorHandler)
 
 app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+  console.log(`Server running on port ${PORT}`)
 })
