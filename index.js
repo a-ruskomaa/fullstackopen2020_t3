@@ -105,7 +105,10 @@ const errorHandler = (error, request, response, next) => {
   console.error(error.message)
 
   if (error.name === 'CastError') {
-    return response.status(400).send({ error: 'malformatted id' })
+    return response.status(400).send({ error: 'malformed id' })
+  } else if (error.name === 'ValidationError') {
+    const errors = Object.values(error.errors).map(entry => entry.properties.message);
+    return response.status(400).json({ errors })
   }
 
   next(error)

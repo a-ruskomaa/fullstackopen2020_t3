@@ -13,8 +13,17 @@ mongoose.connect(URI, { useNewUrlParser: true, useUnifiedTopology: true, useFind
   })
 
 const entrySchema = new mongoose.Schema({
-  name: String,
-  number: String
+  name: {
+    type: String,
+    minlength: 3,
+    required: true,
+    unique: true
+  },
+  number: {
+    type: String,
+    minlength: 8,
+    required: true
+  }
 })
 
 entrySchema.set('toJSON', {
